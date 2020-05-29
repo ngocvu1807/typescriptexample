@@ -149,6 +149,26 @@ abstract class Component<T extends HTMLElement, U extends HTMLElement> {
   abstract renderContent(): void;
 }
 
+// Project Item Class
+class ProjectItem extends Component<HTMLUListElement, HTMLLIElement> {
+  private project: Project;
+  constructor(hostId: string, project: Project) {
+    super('single-project', hostId, false, project.id);
+    this.project = project;
+    this.configure();
+    this.renderContent();
+  }
+
+  configure() {}
+  renderContent() {
+    this.element.querySelector('h2')!.textContent = this.project.title;
+    this.element.querySelector(
+      'h3'
+    )!.textContent = this.project.people.toString();
+    this.element.querySelector('p')!.textContent = this.project.title;
+  }
+}
+
 // Projectlist class
 class ProjectList extends Component<HTMLDivElement, HTMLElement> {
   assignProjects: Project[];
@@ -171,7 +191,7 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
           return prj.status === ProjectStatus.Finished;
         }
       });
-      this.assignProjects = relevantProjects;
+      this.assignProjects = relevantProjects; // add active item into assignedProject array
       this.renderProjects();
     });
   }
@@ -189,9 +209,10 @@ class ProjectList extends Component<HTMLDivElement, HTMLElement> {
     )! as HTMLUListElement;
     listEl.innerHTML = '';
     for (const prjItem of this.assignProjects) {
-      const listItem = document.createElement('li');
-      listItem.textContent = prjItem.title;
-      listEl.appendChild(listItem);
+      // const listItem = document.createElement('li');
+      // listItem.textContent = prjItem.title;
+      // listEl.appendChild(listItem);
+      new ProjectItem(this.element.querySelector('ul')!.id, prjItem);
     }
   }
 }
